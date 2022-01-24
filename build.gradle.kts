@@ -7,6 +7,12 @@ plugins {
 	kotlin("plugin.spring") version "1.6.10"
 }
 
+val jar by tasks.getting(Jar::class) {
+	manifest {
+		attributes["Main-Class"] = "de.padidas.snakeapi.SnakeApiApplication"
+	}
+}
+
 group = "de.padidas"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
