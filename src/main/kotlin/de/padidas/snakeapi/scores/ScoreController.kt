@@ -22,7 +22,7 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
         val score = Score(
             id = scoreReq.scoreId,
             score = scoreReq.score,
-            username = scoreReq.username,
+            username = if (scoreReq.username.trim().isEmpty()) "Anonymous" else scoreReq.username.trim(),
             snakeLength = scoreReq.snakeLength,
             modifiedDate = LocalDateTime.now(),
         )
