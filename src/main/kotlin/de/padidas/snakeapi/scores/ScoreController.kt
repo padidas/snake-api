@@ -9,16 +9,23 @@ import java.time.LocalDateTime
 @RequestMapping("/scores")
 class ScoreController(private val scoreRepository: ScoreRepository, private val scoreMongoRepo: ScoreMongoRepo) {
 
-    @GetMapping
-    fun getTenHighestScores(): ResponseEntity<List<Score>> {
-        println("GET REQ *********************************")
+    @GetMapping("/topScores")
+    fun getTopScores(): ResponseEntity<List<Score>> {
+        println("GET /scores/topScores *********************************")
         val scores = scoreRepository.findTenHighestScores()
+        return ResponseEntity.ok(scores)
+    }
+
+    @GetMapping("/activeScores")
+    fun getActiveScores(): ResponseEntity<List<Score>> {
+        println("GET /scores/activeScores *********************************")
+        val scores = scoreRepository.findActiveScores()
         return ResponseEntity.ok(scores)
     }
 
     @PostMapping
     fun createOrUpdateScore(@RequestBody scoreReq: ScoreReq): ResponseEntity<Score> {
-        println("POST REQ ********************************")
+        println("POST /scores ********************************")
         val score = Score(
             id = scoreReq.scoreId,
             score = scoreReq.score,
