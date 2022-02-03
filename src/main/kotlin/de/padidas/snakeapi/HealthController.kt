@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController
 class HealthController {
 
     @GetMapping
-    fun pingPong() = "pong!!"
+    fun pingPong() = "pong!!!"
 }
