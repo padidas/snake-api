@@ -39,7 +39,7 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
             username = if (scoreReq.username.trim().isEmpty()) "Anonymous" else scoreReq.username.trim(),
             snakeLength = scoreReq.snakeLength,
             modifiedDate = LocalDateTime.now(),
-            isActivityHidden = scoreReq.isActivityHidden,
+            privateMode = scoreReq.privateMode,
         )
         return ResponseEntity.ok(scoreMongoRepo.save(score))
     }
@@ -50,5 +50,5 @@ data class ScoreReq(
     val username: String,
     val score: Int,
     val snakeLength: Int,
-    val isActivityHidden: Boolean,
+    val privateMode: Boolean,
 )

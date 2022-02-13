@@ -60,7 +60,7 @@ class ScoreRepository(val mongoTemplate: MongoTemplate) {
             .addCriteria(
                 Criteria().andOperator(
                     Criteria.where("modifiedDate").gt(nowMinus10Seconds),
-                    Criteria.where("isActivityHidden").`is`(false)
+                    Criteria.where("privateMode").`is`(false)
                 )
             )
             .limit(8)
