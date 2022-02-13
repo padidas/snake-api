@@ -1,15 +1,13 @@
 package de.padidas.snakeapi.scores
 
-import org.bson.types.ObjectId
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.Update
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
-import java.util.*
+
 
 interface ScoreMongoRepo : MongoRepository<Score, String> {
 }
@@ -24,10 +22,47 @@ class ScoreRepository(val mongoTemplate: MongoTemplate) {
         return mongoTemplate.find(query, Score::class.java)
     }
 
+//    fun findTenBestPlayers(): List<Score> {
+//        val aggregation = newAggregation(
+//            sort(Sort.Direction.DESC, "score"),
+//            group("_id", "username")
+//                .first("username").`as`("username")
+//                .first("score").`as`("score")
+//                .first("snakeLength").`as`("snakeLength")
+//                .first("modifiedDate").`as`("modifiedDate"),
+//            sort(Sort.Direction.DESC, "score"),
+//            limit(10)
+//        )
+//
+//        val groupResult = mongoTemplate.aggregate(aggregation, Score::class.java, Score::class.java)
+//        return groupResult.mappedResults
+//    }
+//
+//
+//    /*
+//    db.score.aggregate([
+//        { "$sort": { "score": -1 } },
+//        { "$group": {
+//            "_id": "$username",
+//            "username": { "$first": "$username" },
+//            "score": { "$first": "$score" },
+//            "snakeLength": { "$first": "$snakeLength" }
+//        }}
+//    ])
+//    .sort({"score": -1})
+//    .limit(10)
+//     */
+
+
     fun findActiveScores(): List<Score> {
-        val nowMinus20Seconds = LocalDateTime.now().minusSeconds(20)
+        val nowMinus10Seconds = LocalDateTime.now().minusSeconds(10)
         val query = Query()
-            .addCriteria(Criteria.where("modifiedDate").gt(nowMinus20Seconds))
+            .addCriteria(
+                Criteria().andOperator(
+                    Criteria.where("modifiedDate").gt(nowMinus10Seconds),
+                    Criteria.where("isActivityHidden").`is`(false)
+                )
+            )
             .limit(8)
             .with(Sort.by("modifiedDate").descending())
         return mongoTemplate.find(query, Score::class.java)

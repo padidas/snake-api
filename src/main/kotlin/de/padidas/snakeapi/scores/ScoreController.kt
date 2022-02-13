@@ -16,6 +16,13 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
         return ResponseEntity.ok(scores)
     }
 
+//    @GetMapping("/topPlayers")
+//    fun getTopPlayers(): ResponseEntity<List<Score>> {
+//        println("GET /scores/topPlayers *********************************")
+//        val scores = scoreRepository.findTenBestPlayers()
+//        return ResponseEntity.ok(scores)
+//    }
+
     @GetMapping("/activeScores")
     fun getActiveScores(): ResponseEntity<List<Score>> {
         println("GET /scores/activeScores *********************************")
@@ -32,6 +39,7 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
             username = if (scoreReq.username.trim().isEmpty()) "Anonymous" else scoreReq.username.trim(),
             snakeLength = scoreReq.snakeLength,
             modifiedDate = LocalDateTime.now(),
+            isActivityHidden = scoreReq.isActivityHidden,
         )
         return ResponseEntity.ok(scoreMongoRepo.save(score))
     }
@@ -42,4 +50,5 @@ data class ScoreReq(
     val username: String,
     val score: Int,
     val snakeLength: Int,
+    val isActivityHidden: Boolean,
 )

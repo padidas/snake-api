@@ -10,4 +10,5 @@ data class Score(
     val score: Int,
     val snakeLength: Int,
     val modifiedDate: LocalDateTime = LocalDateTime.now(),
+    val isActivityHidden: Boolean = false,
 )
