@@ -16,12 +16,12 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
         return ResponseEntity.ok(scores)
     }
 
-//    @GetMapping("/topPlayers")
-//    fun getTopPlayers(): ResponseEntity<List<Score>> {
-//        println("GET /scores/topPlayers *********************************")
-//        val scores = scoreRepository.findTenBestPlayers()
-//        return ResponseEntity.ok(scores)
-//    }
+    @GetMapping("/topPlayers")
+    fun getTopPlayers(): ResponseEntity<List<Score>> {
+        println("GET /scores/topPlayers *********************************")
+        val scores = scoreRepository.findTenBestPlayers()
+        return ResponseEntity.ok(scores)
+    }
 
     @GetMapping("/activeScores")
     fun getActiveScores(): ResponseEntity<List<Score>> {

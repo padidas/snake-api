@@ -2,6 +2,7 @@ package de.padidas.snakeapi.scores
 
 import org.springframework.data.domain.Sort
 import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.aggregation.Aggregation.*
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.repository.MongoRepository
@@ -22,37 +23,21 @@ class ScoreRepository(val mongoTemplate: MongoTemplate) {
         return mongoTemplate.find(query, Score::class.java)
     }
 
-//    fun findTenBestPlayers(): List<Score> {
-//        val aggregation = newAggregation(
-//            sort(Sort.Direction.DESC, "score"),
-//            group("_id", "username")
-//                .first("username").`as`("username")
-//                .first("score").`as`("score")
-//                .first("snakeLength").`as`("snakeLength")
-//                .first("modifiedDate").`as`("modifiedDate"),
-//            sort(Sort.Direction.DESC, "score"),
-//            limit(10)
-//        )
-//
-//        val groupResult = mongoTemplate.aggregate(aggregation, Score::class.java, Score::class.java)
-//        return groupResult.mappedResults
-//    }
-//
-//
-//    /*
-//    db.score.aggregate([
-//        { "$sort": { "score": -1 } },
-//        { "$group": {
-//            "_id": "$username",
-//            "username": { "$first": "$username" },
-//            "score": { "$first": "$score" },
-//            "snakeLength": { "$first": "$snakeLength" }
-//        }}
-//    ])
-//    .sort({"score": -1})
-//    .limit(10)
-//     */
+    fun findTenBestPlayers(): List<Score> {
+        val aggregation = newAggregation(
+            sort(Sort.Direction.DESC, "score"),
+            group("username")
+                .first("username").`as`("username")
+                .first("score").`as`("score")
+                .first("snakeLength").`as`("snakeLength")
+                .first("modifiedDate").`as`("modifiedDate"),
+            sort(Sort.Direction.DESC, "score"),
+            limit(10)
+        )
 
+        val groupResult = mongoTemplate.aggregate(aggregation, Score::class.java, Score::class.java)
+        return groupResult.mappedResults
+    }
 
     fun findActiveScores(): List<Score> {
         val nowMinus10Seconds = LocalDateTime.now().minusSeconds(10)
