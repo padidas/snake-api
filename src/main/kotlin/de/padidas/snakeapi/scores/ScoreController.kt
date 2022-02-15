@@ -33,10 +33,12 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
     @PostMapping
     fun createOrUpdateScore(@RequestBody scoreReq: ScoreReq): ResponseEntity<Score> {
         println("POST /scores ********************************")
+        val username = if (scoreReq.username.trim().isEmpty()) "Anonymous" else scoreReq.username.trim()
         val score = Score(
             id = scoreReq.scoreId,
             score = scoreReq.score,
-            username = if (scoreReq.username.trim().isEmpty()) "anonymous" else scoreReq.username.trim().lowercase(),
+            username = username,
+            normalizedUsername = username.lowercase(),
             snakeLength = scoreReq.snakeLength,
             modifiedDate = LocalDateTime.now(),
             privateMode = scoreReq.privateMode,

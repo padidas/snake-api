@@ -7,6 +7,7 @@ data class Score(
     @Id
     val id: String,
     val username: String,
+    val normalizedUsername: String,
     val score: Int,
     val snakeLength: Int,
     val modifiedDate: LocalDateTime = LocalDateTime.now(),

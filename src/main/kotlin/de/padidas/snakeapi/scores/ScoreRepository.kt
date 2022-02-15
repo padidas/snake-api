@@ -26,8 +26,9 @@ class ScoreRepository(val mongoTemplate: MongoTemplate) {
     fun findTenBestPlayers(): List<Score> {
         val aggregation = newAggregation(
             sort(Sort.Direction.DESC, "score"),
-            group("username")
+            group("normalizedUsername")
                 .first("username").`as`("username")
+                .first("normalizedUsername").`as`("normalizedUsername")
                 .first("score").`as`("score")
                 .first("snakeLength").`as`("snakeLength")
                 .first("modifiedDate").`as`("modifiedDate"),
