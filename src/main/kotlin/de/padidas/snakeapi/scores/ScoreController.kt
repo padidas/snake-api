@@ -3,11 +3,16 @@ package de.padidas.snakeapi.scores
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
+import java.util.*
 
 @RestController
 @CrossOrigin(origins = ["*"])
 @RequestMapping("/scores")
-class ScoreController(private val scoreRepository: ScoreRepository, private val scoreMongoRepo: ScoreMongoRepo) {
+class ScoreController(
+    private val scoreRepository: ScoreRepository,
+    private val scoreMongoRepo: ScoreMongoRepo,
+    private val scoreConfig: ScoreConfig
+) {
 
     @GetMapping("/topScores")
     fun getTopScores(): ResponseEntity<List<Score>> {
@@ -34,9 +39,14 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
     fun createOrUpdateScore(@RequestBody scoreReq: ScoreReq): ResponseEntity<Score> {
         println("POST /scores ********************************")
         val username = if (scoreReq.username.trim().isEmpty()) "Anonymous" else scoreReq.username.trim()
+
+        val stillEncodedAndCombinedScore = String(Base64.getDecoder().decode(scoreReq.score))
+        val stillEncodedScore = scoreConfig.iso?.let { stillEncodedAndCombinedScore.split(it) }?.get(1)
+        val decodedScore = String(Base64.getDecoder().decode(stillEncodedScore))
+
         val score = Score(
             id = scoreReq.scoreId,
-            score = scoreReq.score,
+            score = decodedScore.toInt(),
             username = username,
             normalizedUsername = username.lowercase(),
             snakeLength = scoreReq.snakeLength,
@@ -50,7 +60,7 @@ class ScoreController(private val scoreRepository: ScoreRepository, private val 
 data class ScoreReq(
     val scoreId: String,
     val username: String,
-    val score: Int,
+    val score: String,
     val snakeLength: Int,
     val privateMode: Boolean,
 )
